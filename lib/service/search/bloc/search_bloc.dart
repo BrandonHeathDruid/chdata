@@ -22,28 +22,28 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       HiveProvider.calledInit = false;
       await provider.init();
-      emit(const SearchStateSearching<Item>(
-          isLoading: true, database: itemListField));
+      emit(const SearchStateLoading());
       final database = prefs.getString(databaseField) ?? mobListField;
       final key = prefs.getString(searchPatternField) ?? '';
       final contains = prefs.getBool(searchContainsField) ?? false;
       switch (database) {
-        case mobListField:
-          final allResults = await provider.search<Mob>(
-              database: database, key: key, contains: contains);
-          emit(SearchStateSearching<Mob>(
-              results: allResults, isLoading: false, database: database));
-          break;
         case itemListField:
           final allResults = await provider.search<Item>(
               database: database, key: key, contains: contains);
           emit(SearchStateSearching<Item>(
-              results: allResults, isLoading: false, database: database));
+              results: allResults, database: database));
+          break;
+        default:
+          final allResults = await provider.search<Mob>(
+              database: mobListField, key: key, contains: contains);
+          emit(SearchStateSearching<Mob>(
+              results: allResults, database: mobListField));
           break;
       }
     });
 
     on<SearchEventSearch>((event, emit) async {
+      emit(const SearchStateLoading());
       final database = event.database;
       final key = event.key;
       final contains = event.contains;
@@ -51,17 +51,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         case mobListField:
           final results = await provider.search<Mob>(
               database: database, key: key, contains: contains);
-          emit(SearchStateSearching<Mob>(
-              results: results, isLoading: false, database: database));
+          emit(SearchStateSearching<Mob>(results: results, database: database));
         case itemListField:
           final results = await provider.search<Item>(
               database: database, key: key, contains: contains);
-          emit(SearchStateSearching<Item>(
-              results: results, isLoading: false, database: database));
+          emit(
+              SearchStateSearching<Item>(results: results, database: database));
       }
     });
 
     on<SearchEventShowData>((event, emit) async {
+      emit(const SearchStateLoading());
       final database = event.database;
       final key = event.key;
       switch (database) {

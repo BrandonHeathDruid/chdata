@@ -1,7 +1,7 @@
 import 'package:chdata/models/item/constants.dart';
 import 'package:chdata/models/item/enum/equipment_slot.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 const widthSB = 8.0;
 const textStyleField = TextStyle(
@@ -18,3 +18,5 @@ final emptyValues = [
   'False',
   EquipmentSlot.unequipable.name.capitalize
 ];
+
+const imagesAssetsDir = 'assets/images/zones';
